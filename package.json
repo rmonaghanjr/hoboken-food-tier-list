@@ -1,0 +1,23 @@
+{
+  "name": "hoboken-food-tier-list",
+  "version": "1.0.0",
+  "description": "A tier list for ranking resturants around hoboken.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aejester/hoboken-food-tier-list.git"
+  },
+  "author": "Ryan Monaghan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aejester/hoboken-food-tier-list/issues"
+  },
+  "homepage": "https://github.com/aejester/hoboken-food-tier-list#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.6.9"
+  }
+}
