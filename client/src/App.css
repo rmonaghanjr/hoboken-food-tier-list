@@ -6,6 +6,7 @@
 
 .title-bar {
 	padding: 10px;
+	flex: 1;
 }
 
 .title {
@@ -14,4 +15,28 @@
 
 .subtitle {
 	color: white;
+	display: inline-block;
+}
+
+.button {
+    background-color: #008CBA; /* Green */
+    border: none;
+    color: white;
+    padding: 10px;
+    padding-left: 50px;
+    padding-right: 50px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-radius: 10px;
+	float: right;
+  }
+
+.button:hover {
+    background-color: #008CBA; /* Green */
+    color: white;
+    border-radius: 10px;
 }
