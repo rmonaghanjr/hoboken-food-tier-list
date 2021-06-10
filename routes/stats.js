@@ -1,15 +1,15 @@
 const router = require("express").Router();
-const {MongoClient} = require("mongodb");
+const {MongoClient, ObjectId} = require("mongodb");
 const client = new MongoClient("mongodb://localhost:27017/?readPreference=primary&ssl=false");
 
 router.get("/", async (req, res) => {
     try {
         await client.connect();
 
-        const db = client.db("hoboken-tier-list");
+        const db = client.db("hoboken-food-tier-list");
         const all = db.collection("all");
 
-        let totalDB = await all.findOne({});
+        let totalDB = await all.findOne({_id: ObjectId("60c19f2fee509c27d67970b2")});
 
         if (totalDB) {
             let stats = {
@@ -20,72 +20,72 @@ router.get("/", async (req, res) => {
 
             res.status(200).json(stats)
         } else {
-            res.status(500)
+            res.status(500).send("Internal server error.");
         }
 
     } catch(e) {
         console.log(e);
-        res.status(500)
+        res.status(500).send("Internal server error.");
     }
 });
 
-router.post("/increment/rateCount", (req, res) => {
+router.get("/increment/rateCount", async (req, res) => {
     try {
         await client.connect();
 
-        const db = client.db("hoboken-tier-list");
+        const db = client.db("hoboken-food-tier-list");
         const all = db.collection("all");
 
-        let totalDB = await all.findOne({});
+        let totalDB = await all.findOne({_id: ObjectId("60c19f2fee509c27d67970b2")});
 
         if (totalDB) {
             totalDB.rateCount++;
 
-            const result = await all.updateOne({}, {$set: totalDB});
+            const result = await all.updateOne({_id: ObjectId("60c19f2fee509c27d67970b2")}, {$set: totalDB});
 
             if (result.modifiedCount > 0) {
-                res.status(200)
+                res.status(200).send("Done");
             } else {
-                res.status(500)
+                res.status(500).send("Internal server error.");
             }
 
         } else {
-            res.status(500)
+            res.status(500).send("Internal server error.");
         }
 
     } catch(e) {
         console.log(e);
-        res.status(500)
+        res.status(500).send("Internal server error.");
     }
 });
 
-router.post("/increment/viewCount", (req, res) => {
+router.get("/increment/viewCount", async (req, res) => {
     try {
         await client.connect();
 
-        const db = client.db("hoboken-tier-list");
+        const db = client.db("hoboken-food-tier-list");
         const all = db.collection("all");
 
-        let totalDB = await all.findOne({});
+        let totalDB = await all.findOne({_id: ObjectId("60c19f2fee509c27d67970b2")});
 
         if (totalDB) {
-            totalDB.viewCount++;
+            totalDB["viewCount"]++;
 
-            const result = await all.updateOne({}, {$set: totalDB});
+            const result = await all.updateOne({_id: ObjectId("60c19f2fee509c27d67970b2")}, {$set: totalDB});
 
             if (result.modifiedCount > 0) {
-                res.status(200)
+                res.status(200).send("Done");
             } else {
-                res.status(500)
+                res.status(500).send("Internal server error. 3");
             }
 
         } else {
-            res.status(500)
+            res.status(500).send("Internal server error. 2");
         }
 
     } catch(e) {
         console.log(e);
-        res.status(500)
+        res.status(500).send("Internal server error. 1");
     }
 });
 

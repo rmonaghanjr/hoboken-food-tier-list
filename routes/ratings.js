@@ -6,7 +6,7 @@ router.get("/all", async (req, res) => {
     try {
         await client.connect();
 
-        const db = client.db("hoboken-tier-list");
+        const db = client.db("hoboken-food-tier-list");
         const all = db.collection("all");
 
         let totalDB = await all.findOne({});
@@ -14,14 +14,16 @@ router.get("/all", async (req, res) => {
         if (totalDB) {
             const items = db.collection("items");
 
-            let promises = totalDB.items.map((item) => {
+            let promises = totalDB.items.map(async (item) => {
                 return await items.findOne({_id: ObjectId(item)});
             }); 
 
-            let resolved = await Promise.resolve(promises);
-            res.status(200).json({items: resolved});
+            Promise.all(promises).then(values => {
+                console.log(values);
+                res.status(200).json({items: values});
+            })
         } else {
-            res.status(500);
+            res.status(500).send("Internal server error.");
         }
     } catch(e) {
         console.log(e);
@@ -40,14 +42,14 @@ router.get("/:id", async (req, res) => {
         if (item) {
             res.status(200).json({item: item});
         } else {
-            res.status(404);
+            res.status(404).send("Not found!");
         }
     } catch(e) {
         console.log(e);
     }
 });
 
-router.post("/:id/vote/:vote", async (req, res) => {
+router.get("/:id/vote/:vote", async (req, res) => {
     try {
         await client.connect();
 
@@ -57,27 +59,58 @@ router.post("/:id/vote/:vote", async (req, res) => {
         let vote = req.params.vote;
         let id = req.params.id;
 
-        let item = items.findOne({_id: ObjectId(id)});
+        let item = await items.findOne({_id: ObjectId(id)});
 
         if (item) {
-            let score = vote == "up" ? 1 : 0;
-
-            item.score += score;
-            item.possible++;
+            switch(vote) {
+                case "s": {
+                    item["score"] += 6;
+                    break;
+                }
+                case "a": {
+                    item["score"] += 5;
+                    break;
+                }
+                case "b": {
+                    item["score"] += 4;
+                    break;
+                }
+                case "c": {
+                    item["score"] += 3;
+                    break;
+                }
+                case "d": {
+                    item["score"] += 2;
+                    break;
+                }
+                case "f": {
+                    item["score"] += 1;
+                    break;
+                }
+                default:
+                    res.status(500).send("Internal server error.");
+                    return;
+            }
+            item["possible"] += 6;
+            item["voteCount"]++;
+            if (item[vote] == undefined) {
+                item[vote] = 0;
+            }
+            item[vote]++;
 
             const result = await items.updateOne({_id: ObjectId(id)}, {$set: item});
 
             if (result.modifiedCount > 0) {
-                res.status(200);
+                res.status(200).send("Success!");
             } else {
-                res.status(500);
+                res.status(500).send("Internal server error.");
             }
         } else {
-            res.status(404);
+            res.status(404).send("Not found!");
         }
     } catch(e) {
         console.log(e);
-        res.status(500);
+        res.status(500).send("Internal server error.");
     }
 });
 

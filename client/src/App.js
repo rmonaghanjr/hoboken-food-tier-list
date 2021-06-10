@@ -1,28 +1,111 @@
 import "./App.css";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./components/TierComponent"
 import TierComponent from "./components/TierComponent";
-import {ToastProvider} from "react-toast-notifications";
+import {useToasts} from "react-toast-notifications";
 
 const App = () => {
-	return (
-		<ToastProvider autoDismiss autoDismissTimeout={6000}>
-			<div className="App">
-				<button onClick={() => {
 
-				}} className="button"><span style={{fontSize: 20}}>+</span> Add Resturant</button>
-				<div className="title-bar">
-					<h2 className="title">hoboken food tier list</h2>
-					<p className="subtitle">A food tier list for the resturants around hoboken maintained by the opinions of the studens of The Stevens Institute of Technology.</p>
-				</div>
-				<TierComponent text={"S Tier"} color={"#FE7E7E"} items={[{name: "Dunkin' Donuts", website: "Dunkin' Donuts"}]}/>
-				<TierComponent text={"A Tier"} color={"#FFBE7E"} />
-				<TierComponent text={"B Tier"} color={"#FFFF7F"} />
-				<TierComponent text={"C Tier"} color={"#BEFE7E"} />
-				<TierComponent text={"D Tier"} color={"#7FFFFF"} />
-				<TierComponent text={"F Tier"} color={"#7EBEFE"} />
+	const {addToast} = useToasts();
+
+	let [sTier, setSTier] = useState([]);
+	let [aTier, setATier] = useState([]);
+	let [bTier, setBTier] = useState([]);
+	let [cTier, setCTier] = useState([]);
+	let [dTier, setDTier] = useState([]);
+	let [fTier, setFTier] = useState([]);
+
+	useEffect(() => {
+		reload()
+
+		let url = "http://localhost:8000/api/stats/increment/viewCount";
+		fetch(url)
+		.then(res => {console.log(res)})
+	}, []);
+
+	const addNewItem = () => {
+		let name = prompt("Enter a name for the new item:");
+		let website = prompt("Paste the website for the resturant:");
+
+		if (name === undefined || website === undefined || name === "" || website === "" || name === null || website === null) {
+			alert("You cannot have blank fields. Try again.")
+		} else {
+			let url = "http://localhost:8000/api/items/add?name="+name+"&website="+website;
+
+			fetch(url)
+			.then(res => {
+				if (res.status === 200) {
+					addToast("Item added successfully! You can now vote on the resturant. It starts in the F tier before the first vote.", {appearance: "success"});
+					reload();
+				} else if (res.status === 500) {
+					console.log(res)
+					addToast("An internal server error occurred. Please try again later.", {appearance: "error"});
+				}
+			})
+		}
+	}
+
+	const reload = () => {
+		let url = "http://localhost:8000/api/ratings/all"
+
+		fetch(url)
+		.then(res => {
+			if (res.status === 500) {
+				addToast("An internal server error occurred. Please try again later.", {appearance: "error"})
+			} else if (res.status === 200) {
+				res.json().then(data => {
+					data.items.forEach((item) => {
+						console.log(item);
+						let score = isNaN(item["score"] / item.possible) ? 0 : (item["score"] / item.possible) * 100;
+						let cutoff = 100/6;
+
+						let s = [];
+						let a = [];
+						let b = [];
+						let c = [];
+						let d = [];
+						let f = [];
+
+						if (score < cutoff) {
+							f.push(item);
+						} else if (score >= cutoff && score < 2*cutoff) {
+							d.push(item);
+						} else if (score >= 2*cutoff && score < 3*cutoff) {
+							c.push(item);
+						} else if (score >= 3*cutoff && score < 4*cutoff) {
+							b.push(item);
+						} else if (score >= 4*cutoff && score < 5*cutoff) {
+							a.push(item);
+						} else if (score >= 5*cutoff) {
+							s.push(item);
+						}
+
+						setSTier(s);
+						setATier(a);
+						setBTier(b);
+						setCTier(c);
+						setDTier(d);
+						setFTier(f);
+					});
+				})
+			}
+		})
+	}
+
+	return (
+		<div className="App">
+			<button onClick={addNewItem} className="button"><span style={{fontSize: 20}}>+</span> Add Resturant</button>
+			<div className="title-bar">
+				<h2 className="title">hoboken food tier list</h2>
+				<p className="subtitle">A food tier list for the resturants around hoboken maintained by the opinions of the studens of The Stevens Institute of Technology.</p>
 			</div>
-		</ToastProvider>
+			<TierComponent text={"S Tier"} color={"#FE7E7E"} items={sTier} onVote={reload} />
+			<TierComponent text={"A Tier"} color={"#FFBE7E"} items={aTier} onVote={reload} />
+			<TierComponent text={"B Tier"} color={"#FFFF7F"} items={bTier} onVote={reload} />
+			<TierComponent text={"C Tier"} color={"#BEFE7E"} items={cTier} onVote={reload} />
+			<TierComponent text={"D Tier"} color={"#7FFFFF"} items={dTier} onVote={reload} />
+			<TierComponent text={"F Tier"} color={"#7EBEFE"} items={fTier} onVote={reload} />
+		</div>
 	);
 }
 

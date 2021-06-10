@@ -30,3 +30,28 @@
     color: white;
     border-radius: 10px;
 }
+
+.w-100 {
+    width: 100%;
+}
+
+.title {
+    color: white;
+}
+
+a {
+    color: #008CBA;
+}
+
+a:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+a:visited {
+    color: #008CBA;
+}
+
+.white {
+    color: white;
+}

@@ -13,7 +13,7 @@ const TierComponent = (props) => {
             </div>
             <div className="tier-items">
                 {props.items !== undefined ? props.items.map((place) => {
-                    return <TierItem name={place.name} website={place.website} />
+                    return <TierItem name={place.name} website={place.website} id={place._id} onVote={props.onVote}/>
                 }) : <p></p>}
             </div>
         </div>
