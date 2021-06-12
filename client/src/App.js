@@ -96,7 +96,7 @@ const App = () => {
 		<div className="App">
 			<button onClick={addNewItem} className="button"><span style={{fontSize: 20}}>+</span> Add Resturant</button>
 			<div className="title-bar">
-				<h2 className="title">hoboken food tier list</h2>
+				<h2 className="title">stevens food guide</h2>
 				<p className="subtitle">A food tier list for the resturants around hoboken maintained by the opinions of the studens of The Stevens Institute of Technology.</p>
 			</div>
 			<TierComponent text={"S Tier"} color={"#FE7E7E"} items={sTier} onVote={reload} />
