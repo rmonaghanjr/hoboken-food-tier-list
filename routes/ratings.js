@@ -6,7 +6,7 @@ router.get("/all", async (req, res) => {
     try {
         await client.connect();
 
-        const db = client.db("hoboken-food-tier-list");
+        const db = client.db("stevens-food-guide");
         const all = db.collection("all");
 
         let totalDB = await all.findOne({});
@@ -53,7 +53,7 @@ router.get("/:id/vote/:vote", async (req, res) => {
     try {
         await client.connect();
 
-        const db = client.db("hoboken-food-tier-list");
+        const db = client.db("stevens-food-guide");
         const items = db.collection("items");
 
         let vote = req.params.vote;

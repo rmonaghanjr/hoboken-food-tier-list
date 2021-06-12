@@ -6,7 +6,7 @@ router.get("/", async (req, res) => {
     try {
         await client.connect();
 
-        const db = client.db("hoboken-food-tier-list");
+        const db = client.db("stevens-food-guide");
         const all = db.collection("all");
 
         let totalDB = await all.findOne({_id: ObjectId("60c19f2fee509c27d67970b2")});
@@ -33,7 +33,7 @@ router.get("/increment/rateCount", async (req, res) => {
     try {
         await client.connect();
 
-        const db = client.db("hoboken-food-tier-list");
+        const db = client.db("stevens-food-guide");
         const all = db.collection("all");
 
         let totalDB = await all.findOne({_id: ObjectId("60c19f2fee509c27d67970b2")});
@@ -63,7 +63,7 @@ router.get("/increment/viewCount", async (req, res) => {
     try {
         await client.connect();
 
-        const db = client.db("hoboken-food-tier-list");
+        const db = client.db("stevens-food-guide");
         const all = db.collection("all");
 
         let totalDB = await all.findOne({_id: ObjectId("60c19f2fee509c27d67970b2")});

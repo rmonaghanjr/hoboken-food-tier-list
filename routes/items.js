@@ -6,7 +6,7 @@ router.get("/add", async (req, res) => {
     try {
         await client.connect();
 
-        const db = client.db("hoboken-food-tier-list");
+        const db = client.db("stevens-food-guide");
         const items = db.collection("items");
 
         let name = req.query.name;
