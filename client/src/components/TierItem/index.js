@@ -21,14 +21,14 @@ const TierItem = (props) => {
     }
 
     const submitVote = () => {
-        let url = "http://localhost:8000/api/ratings/"+props.id+"/vote/"+vote;
+        let url = "http://178.128.159.95:8000/api/ratings/"+props.id+"/vote/"+vote;
 
         fetch(url)
         .then(res => {
             if (res.status === 200) {
                 closeModal();
                 addToast("Vote recorded!", {appearance: "success"});
-                let url2 = "http://localhost:8000/api/stats/increment/rateCount";
+                let url2 = "http://178.128.159.95:8000/api/stats/increment/rateCount";
 		        fetch(url2)
                 .then(res => {console.log(res)})
             } else {

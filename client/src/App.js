@@ -18,7 +18,7 @@ const App = () => {
 	useEffect(() => {
 		reload()
 
-		let url = "http://localhost:8000/api/stats/increment/viewCount";
+		let url = "http://178.128.159.95:8000/api/stats/increment/viewCount";
 		fetch(url)
 		.then(res => {console.log(res)})
 	}, []);
@@ -30,7 +30,7 @@ const App = () => {
 		if (name === undefined || website === undefined || name === "" || website === "" || name === null || website === null) {
 			alert("You cannot have blank fields. Try again.")
 		} else {
-			let url = "http://localhost:8000/api/items/add?name="+name+"&website="+website;
+			let url = "http://178.128.159.95:8000/api/items/add?name="+name+"&website="+website;
 
 			fetch(url)
 			.then(res => {
@@ -46,7 +46,7 @@ const App = () => {
 	}
 
 	const reload = () => {
-		let url = "http://localhost:8000/api/ratings/all"
+		let url = "http://178.128.159.95:8000/api/ratings/all"
 
 		fetch(url)
 		.then(res => {
