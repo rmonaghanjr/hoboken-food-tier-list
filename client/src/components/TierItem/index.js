@@ -21,14 +21,14 @@ const TierItem = (props) => {
     }
 
     const submitVote = () => {
-        let url = "http://178.128.159.95:8000/api/ratings/"+props.id+"/vote/"+vote;
+        let url = "http://stevensfoodguide.com:8000/api/ratings/"+props.id+"/vote/"+vote;
 
         fetch(url)
         .then(res => {
             if (res.status === 200) {
                 closeModal();
                 addToast("Vote recorded!", {appearance: "success"});
-                let url2 = "http://178.128.159.95:8000/api/stats/increment/rateCount";
+                let url2 = "http://stevensfoodguide.com:8000/api/stats/increment/rateCount";
 		        fetch(url2)
                 .then(res => {console.log(res)})
             } else {
@@ -64,7 +64,7 @@ const TierItem = (props) => {
                 }}
             >
                 <h2 className="title">{props.name}</h2>
-                <p className="white">Resturant: <strong>{props.name}</strong></p>
+                <p className="white">Restaurant: <strong>{props.name}</strong></p>
                 <p className="white">Website: <strong><a onClick={() => {
                     window.open(props.website, "_blank");
                 }}>{props.website}</a></strong></p>

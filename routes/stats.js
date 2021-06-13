@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
             let stats = {
                 rateCount: totalDB.rateCount,
                 viewCount: totalDB.viewCount,
-                resturantCount: totalDB.items.length
+                restaurantCount: totalDB.items.length
             }
 
             res.status(200).json(stats)
