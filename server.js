@@ -8,7 +8,8 @@ const apiRoutes = require("./routes");
 
 const PORT = 8000;
 
-let IP_ADDR_ALLOW = {};
+let IP_ADDR_ALLOW_ADDITION = {};
+let IP_ADDR_ALLOW_VOTING = {};
 
 app.set('trust proxy', true);
 
@@ -17,17 +18,30 @@ app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
 app.use((req, res, next) => {
-    if (req.url == "/api/items/add" || req.url.includes("/vote/")) {
-        if (!(IP_ADDR_ALLOW[req.ip+""] == undefined || IP_ADDR_ALLOW[req.ip+""] == -1)) {
+    if (req.url == "/api/items/add") {
+        if (!(IP_ADDR_ALLOW_ADDITION[req.ip+""] == undefined || IP_ADDR_ALLOW_ADDITION[req.ip+""] == -1)) {
             let currDate = new Date();
-            IP_ADDR_ALLOW[req.ip+""] = new Date(currDate.getTime() + 30*60000);
+            IP_ADDR_ALLOW_ADDITION[req.ip+""] = new Date(currDate.getTime() + 5*60000);
             next();
         } else {
-            if (IP_ADDR_ALLOW[req.ip+""] >= new Date()) {
-                IP_ADDR_ALLOW[req.ip+""] = -1;
+            if (IP_ADDR_ALLOW_ADDITION[req.ip+""] >= new Date()) {
+                IP_ADDR_ALLOW_ADDITION[req.ip+""] = -1;
                 next();
             } else {
                 res.status(401).send("You are being ratelimited. Try again in 5 minutes.");
+            }
+        }
+    } else if (req.url.includes("/vote/")) {
+        if (!(IP_ADDR_ALLOW_VOTING[req.ip+""] == undefined || IP_ADDR_ALLOW_VOTING[req.ip+""] == -1)) {
+            let currDate = new Date();
+            IP_ADDR_ALLOW_VOTING[req.ip+""] = new Date(currDate.getTime() + 60000);
+            next();
+        } else {
+            if (IP_ADDR_ALLOW_VOTING[req.ip+""] >= new Date()) {
+                IP_ADDR_ALLOW_VOTING[req.ip+""] = -1;
+                next();
+            } else {
+                res.status(401).send("You are being ratelimited. Try again in 1 minute.");
             }
         }
     } else {

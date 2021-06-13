@@ -24,38 +24,40 @@ const App = () => {
 				addToast("An internal server error occurred. Please try again later.", {appearance: "error"})
 			} else if (res.status === 200) {
 				res.json().then(data => {
+					let s = [];
+					let a = [];
+					let b = [];
+					let c = [];
+					let d = [];
+					let f = [];
+
 					data.items.forEach((item) => {
-						console.log(item);
-						let score = isNaN(item["score"] / item["possible"]) ? 0 : (item["score"] / item["possible"]) * 100;
-						let cutoff = 100/6;
+						if (item !== null) {
+							let score = isNaN(item["score"] / item["possible"]) ? 0 : (item["score"] / item["possible"]) * 100;
+							let cutoff = 100/6;
 
-						let s = sTier;
-						let a = aTier;
-						let b = bTier;
-						let c = cTier;
-						let d = dTier;
-						let f = fTier;
-						if (score < cutoff) {
-							f.push(item);
-						} else if (score >= cutoff && score < 2*cutoff) {
-							d.push(item);
-						} else if (score >= 2*cutoff && score < 3*cutoff) {
-							c.push(item);
-						} else if (score >= 3*cutoff && score < 4*cutoff) {
-							b.push(item);
-						} else if (score >= 4*cutoff && score < 5*cutoff) {
-							a.push(item);
-						} else if (score >= 5*cutoff) {
-							s.push(item);
+							if (score < cutoff) {
+								f.push(item);
+							} else if (score >= cutoff && score < 2*cutoff) {
+								d.push(item);
+							} else if (score >= 2*cutoff && score < 3*cutoff) {
+								c.push(item);
+							} else if (score >= 3*cutoff && score < 4*cutoff) {
+								b.push(item);
+							} else if (score >= 4*cutoff && score < 5*cutoff) {
+								a.push(item);
+							} else if (score >= 5*cutoff) {
+								s.push(item);
+							}
 						}
-
-						setSTier(s);
-						setATier(a);
-						setBTier(b);
-						setCTier(c);
-						setDTier(d);
-						setFTier(f);
 					});
+
+					setSTier(s);
+					setATier(a);
+					setBTier(b);
+					setCTier(c);
+					setDTier(d);
+					setFTier(f);
 				})
 			}
 		})
@@ -86,6 +88,8 @@ const App = () => {
 				} else if (res.status === 500) {
 					console.log(res)
 					addToast("An internal server error occurred. Please try again later.", {appearance: "error"});
+				} else if (res.status === 401) {
+					addToast("Due to spam, I have to rate-limit those who are adding restaurants. Please wait 5 minutes.", {appearance: "error"});
 				}
 			})
 		}

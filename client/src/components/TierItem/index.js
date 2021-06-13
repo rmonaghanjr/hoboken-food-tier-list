@@ -32,8 +32,13 @@ const TierItem = (props) => {
 		        fetch(url2)
                 .then(res => {console.log(res)})
             } else {
-                closeModal();
-                addToast("Internal server error occurred. Please try again later.", {appearance: "error"});
+                if (res.status === 401) {
+                    closeModal();
+                    addToast("Due to spam, I have to rate-limit voters. Please wait 1 minute between votes.", {appearance: "warning"});
+                } else {
+                    closeModal();
+                    addToast("Internal server error occurred. Please try again later.", {appearance: "error"});
+                }
             }
 
             props.onVote();
