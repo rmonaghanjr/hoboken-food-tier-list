@@ -18,6 +18,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
 app.use((req, res, next) => {
+    console.log(IP_ADDR_ALLOW_ADDITION, IP_ADDR_ALLOW_VOTING);
     if (req.url == "/api/items/add") {
         if (!(IP_ADDR_ALLOW_ADDITION[req.ip+""] == undefined || IP_ADDR_ALLOW_ADDITION[req.ip+""] == -1)) {
             let currDate = new Date();
