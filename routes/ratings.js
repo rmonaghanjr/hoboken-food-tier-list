@@ -19,7 +19,6 @@ router.get("/all", async (req, res) => {
             }); 
 
             Promise.all(promises).then(values => {
-                console.log(values);
                 res.status(200).json({items: values});
             })
         } else {
