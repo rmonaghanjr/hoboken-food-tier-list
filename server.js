@@ -20,6 +20,7 @@ app.use(cors());
 app.use((req, res, next) => {
     console.log(IP_ADDR_ALLOW_ADDITION, IP_ADDR_ALLOW_VOTING);
     let ip = req.ip.replace("::ffff:", "").split(".").join("");
+    console.log(req.url);
     if (req.url == "/api/items/add") {
         if (!(IP_ADDR_ALLOW_ADDITION[ip+""] == undefined || IP_ADDR_ALLOW_ADDITION[ip+""] == -1)) {
             let currDate = new Date();
