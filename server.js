@@ -38,19 +38,6 @@ app.use((req, res, next) => {
                 res.status(401).send("You are being ratelimited. Try again in 5 minutes.");
             }
         }
-    } else if (req.url.split("/vote/").length > 1) {
-        if (ratelimit.voting[ip+""] != undefined) {
-            let currDate = new Date();
-            ratelimit.voting[ip+""] = new Date(currDate.getTime() + 60000);
-            next();
-        } else {
-            if (ratelimit.voting[ip+""] >= new Date()) {
-                ratelimit.voting[ip+""] = undefined;
-                next();
-            } else {
-                res.status(401).send("You are being ratelimited. Try again in 1 minute.");
-            }
-        }
     } else {
         next();
     }
