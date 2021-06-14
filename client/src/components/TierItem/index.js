@@ -91,12 +91,12 @@ const TierItem = (props) => {
                 <br/><br/>
                 <h4 className="white">Vote Breakdown</h4>
 
-                <VoteLabel color={"#FE7E7E"} tier={"S Tier"} percent={props.s === undefined ? 0 : props.s / props.voteCount} />
-                <VoteLabel color={"#FFBE7E"} tier={"A Tier"} percent={props.a === undefined ? 0 : props.a / props.voteCount} />
-                <VoteLabel color={"#FFFF7F"} tier={"B Tier"} percent={props.b === undefined ? 0 : props.b / props.voteCount} />
-                <VoteLabel color={"#BEFE7E"} tier={"C Tier"} percent={props.c === undefined ? 0 : props.c / props.voteCount} />
-                <VoteLabel color={"#7FFFFF"} tier={"D Tier"} percent={props.d === undefined ? 0 : props.d / props.voteCount} />
-                <VoteLabel color={"#7EBEFE"} tier={"F Tier"} percent={props.f === undefined ? 0 : props.f / props.voteCount} />
+                <VoteLabel color={"#FE7E7E"} tier={"S Tier"} percent={props.s === undefined ? 0 : (props.s / props.voteCount) * 100} />
+                <VoteLabel color={"#FFBE7E"} tier={"A Tier"} percent={props.a === undefined ? 0 : (props.a / props.voteCount) * 100} />
+                <VoteLabel color={"#FFFF7F"} tier={"B Tier"} percent={props.b === undefined ? 0 : (props.b / props.voteCount) * 100} />
+                <VoteLabel color={"#BEFE7E"} tier={"C Tier"} percent={props.c === undefined ? 0 : (props.c / props.voteCount) * 100} />
+                <VoteLabel color={"#7FFFFF"} tier={"D Tier"} percent={props.d === undefined ? 0 : (props.d / props.voteCount) * 100} />
+                <VoteLabel color={"#7EBEFE"} tier={"F Tier"} percent={props.f === undefined ? 0 : (props.f / props.voteCount) * 100} />
 
                 <br/><br/>
                 <button onClick={closeModal} className="button">Close</button>
