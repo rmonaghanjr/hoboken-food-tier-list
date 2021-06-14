@@ -1,6 +1,7 @@
 const express = require("express");
 const http = require("http");
 const cors = require("cors");
+const fs = require("fs");
 
 const app = express();
 const server = http.createServer(app);
@@ -8,8 +9,12 @@ const apiRoutes = require("./routes");
 
 const PORT = 8000;
 
-let IP_ADDR_ALLOW_ADDITION = {};
-let IP_ADDR_ALLOW_VOTING = {};
+if (!fs.existsSync("./ratelimit.json")) {
+    fs.writeFileSync("./ratelimit.json", JSON.stringify({
+        voting: {},
+        adding: {}
+    }))
+}
 
 app.set('trust proxy', true);
 
@@ -18,30 +23,29 @@ app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
 app.use((req, res, next) => {
-    console.log(IP_ADDR_ALLOW_ADDITION, IP_ADDR_ALLOW_VOTING);
+    let ratelimit = JSON.parse(fs.readFileSync("./ratelimit.json", "utf8"));
     let ip = req.ip.replace("::ffff:", "").split(".").join("");
-    console.log(req.url);
     if (req.url == "/api/items/add") {
-        if (!(IP_ADDR_ALLOW_ADDITION[ip+""] == undefined || IP_ADDR_ALLOW_ADDITION[ip+""] == -1)) {
+        if (!(ratelimit.adding[ip+""] == undefined || ratelimit.adding[ip+""] == -1)) {
             let currDate = new Date();
-            IP_ADDR_ALLOW_ADDITION[ip+""] = new Date(currDate.getTime() + 5*60000);
+            ratelimit.adding[ip+""] = new Date(currDate.getTime() + 5*60000);
             next();
         } else {
-            if (IP_ADDR_ALLOW_ADDITION[ip+""] >= new Date()) {
-                IP_ADDR_ALLOW_ADDITION[ip+""] = -1;
+            if (ratelimit.adding[ip+""] >= new Date()) {
+                ratelimit.adding[ip+""] = -1;
                 next();
             } else {
                 res.status(401).send("You are being ratelimited. Try again in 5 minutes.");
             }
         }
-    } else if (req.url.includes("/vote/")) {
-        if (!(IP_ADDR_ALLOW_VOTING[ip+""] == undefined || IP_ADDR_ALLOW_VOTING[ip+""] == -1)) {
+    } else if (req.url.split("/vote/").length > 1) {
+        if (!(ratelimit.voting[ip+""] == undefined || ratelimit.voting[ip+""] == -1)) {
             let currDate = new Date();
-            IP_ADDR_ALLOW_VOTING[ip+""] = new Date(currDate.getTime() + 60000);
+            ratelimit.voting[ip+""] = new Date(currDate.getTime() + 60000);
             next();
         } else {
-            if (IP_ADDR_ALLOW_VOTING[ip+""] >= new Date()) {
-                IP_ADDR_ALLOW_VOTING[ip+""] = -1;
+            if (ratelimit.voting[ip+""] >= new Date()) {
+                ratelimit.voting[ip+""] = -1;
                 next();
             } else {
                 res.status(401).send("You are being ratelimited. Try again in 1 minute.");
@@ -50,6 +54,8 @@ app.use((req, res, next) => {
     } else {
         next();
     }
+    console.log(ratelimit);
+    fs.writeFileSync("./ratelimit.json", JSON.stringify(ratelimit));
 });
 
 app.use("/api", apiRoutes);
