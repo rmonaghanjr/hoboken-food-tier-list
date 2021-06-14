@@ -25,7 +25,8 @@ app.use(cors());
 app.use((req, res, next) => {
     let ratelimit = JSON.parse(fs.readFileSync("./ratelimit.json", "utf8"));
     let ip = req.ip.replace("::ffff:", "").split(".").join("");
-    if (req.url == "/api/items/add") {
+    if (req.url.split("?")[0] == "/api/items/add") {
+        console.log("here");
         if (ratelimit.adding[ip+""] == undefined) {
             let currDate = new Date();
             ratelimit.adding[ip+""] = new Date(currDate.getTime() + 5*60000);
