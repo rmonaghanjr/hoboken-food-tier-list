@@ -26,26 +26,26 @@ app.use((req, res, next) => {
     let ratelimit = JSON.parse(fs.readFileSync("./ratelimit.json", "utf8"));
     let ip = req.ip.replace("::ffff:", "").split(".").join("");
     if (req.url == "/api/items/add") {
-        if (!(ratelimit.adding[ip+""] == undefined || ratelimit.adding[ip+""] == -1)) {
+        if (ratelimit.adding[ip+""] == undefined) {
             let currDate = new Date();
             ratelimit.adding[ip+""] = new Date(currDate.getTime() + 5*60000);
             next();
         } else {
             if (ratelimit.adding[ip+""] >= new Date()) {
-                ratelimit.adding[ip+""] = -1;
+                ratelimit.adding[ip+""] = undefined;
                 next();
             } else {
                 res.status(401).send("You are being ratelimited. Try again in 5 minutes.");
             }
         }
     } else if (req.url.split("/vote/").length > 1) {
-        if (!(ratelimit.voting[ip+""] == undefined || ratelimit.voting[ip+""] == -1)) {
+        if (ratelimit.voting[ip+""] != undefined) {
             let currDate = new Date();
             ratelimit.voting[ip+""] = new Date(currDate.getTime() + 60000);
             next();
         } else {
             if (ratelimit.voting[ip+""] >= new Date()) {
-                ratelimit.voting[ip+""] = -1;
+                ratelimit.voting[ip+""] = undefined;
                 next();
             } else {
                 res.status(401).send("You are being ratelimited. Try again in 1 minute.");
